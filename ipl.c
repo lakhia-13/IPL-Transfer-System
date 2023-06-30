@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #define str_len 30
 
 typedef struct player {
@@ -19,94 +18,100 @@ typedef struct team {
     struct team *next_team;
 } tm;
 
-struct team *head = NULL;
+struct team *head;
 
-void insert_team(char *t, char *men, int gw, int gl) {
-    tm *newTeam = malloc(sizeof(tm));
-    strcpy(newTeam->tname, t);
-//  newTeam->tname[str_len-1] = '\0';
-    strcpy(newTeam->mentor, men);
-//  newTeam->mentor[str_len-1] = '\0';
+void insert_team(char *t, char *men, int gw, int gl, char *cname, float sal){
+    tm* newTeam = malloc(sizeof(tm));
+    newTeam->node_p = malloc(sizeof(plyr));
+    strcpy(newTeam->tname,t);
+    strcpy(newTeam->mentor,men);
     newTeam->games_won = gw;
     newTeam->games_lost = gl;
+    strcpy(newTeam->node_p->pname,cname);
+    newTeam->node_p->next_player = NULL;
+    newTeam->node_p->salary = sal;
     newTeam->next_team = NULL;
-    plyr *p = malloc(sizeof (plyr));
-    strcpy(p->pname, men);
-    newTeam->node_p = p;
+    tm* current = head;
 
-    tm *current = head;
-    if (current){
-        while (current->next_team) {
+    if (!current){
+        head = newTeam;
+    }else {
+        while (current->next_team){
             current = current->next_team;
         }
         current->next_team = newTeam;
-    } else {
-        head = newTeam;
     }
+}
 
-    /* if (!head) {
-         head = newTeam;
-     } else {
-         tm *current = head;
-         while (current->next_team != NULL) {
-             current = current->next_team;
-         }
-         plyr *p = malloc(sizeof (plyr));
- //        p->pname = men;
-         strcpy(p->pname, men);
-         current->next_team = newTeam;
-         current->node_p = p;
-     }*/
-};
-
-void insert_capt(char *team, char *capt, float sal) {
-    tm *temp = head;
-    while (temp != NULL) {
-        if (team == temp->tname) {
+void insert_plyr(char* team, char* playr, float sal){
+    tm* temp = head;
+    plyr* currentp = malloc(sizeof(plyr));
+    while (temp->next_team!=NULL){
+        if (strcmp(team, temp->tname)==0){
             break;
         }
+        temp = temp->next_team;
     }
-    plyr *newCapt = malloc(sizeof(plyr));
-    strncpy(newCapt->pname, team, str_len);
-    newCapt->pname[str_len - 1] = '\0';
-    newCapt->salary = sal;
-};
+    plyr* curp = temp->node_p;
+    while(curp->next_player){
+        curp = curp->next_player;
+    }
+    strncpy(currentp->pname,playr,str_len);
+    currentp->pname[str_len-1] = '\0';
+    currentp->salary = sal;
+    currentp->next_player = NULL;
+    curp->next_player = currentp;
+}
 
-void traverse_team() {
+void traverse_team(tm* head){
     tm *temp = head;
-    while (temp) {
+    while(temp != NULL){
         printf("Team : %s\n", temp->tname);
         printf("Mentor : %s\n", temp->mentor);
+        printf("Captain : %s\n", temp->node_p->pname);
+        printf("Salary : %f\n", temp->node_p->salary);
         printf("Games won : %d\n", temp->games_won);
-        printf("Games lost : %d\n", temp->games_lost);
+        printf("Games lost : %d\n\n", temp->games_lost);
         temp = temp->next_team;
     }
 };
 
+void traverse_player(tm* head, char* team){
+    tm* temp = head;
+    while(temp != NULL){
+        if (strcmp(team, temp->tname)==0){break;}
+    }
+    plyr* cup = temp->node_p->next_player;
+    while(cup!=NULL){
+        printf("Player : %s\n", cup->pname);
+        printf("Salary : %f\n\n", cup->salary);
+        cup = cup->next_player;
+    }
+};
 
-void del_middle_team(char *x) {
-    tm *temp = head;
-    while (temp->next_team != NULL) {
-        if (temp->next_team->tname == x) {
+void del_middle_team(tm* head, char* x){
+    tm* temp = head;
+    while(temp->next_team!=NULL){
+        if(temp->next_team->tname==x){
             temp->next_team = temp->next_team->next_team;
         }
         temp = temp->next_team;
     }
 };
 
-void traverse_player();
-
 void delete_player();
-
 void get_team();
-
 void get_player();
 
-int main() {
-//  tm* head = NULL;
-//    head = malloc(sizeof(tm));
-    insert_team("Manchester City", "Pepe", 10, 1);
-    insert_team("Not City", "notPepe", 10, 1);
-    traverse_team();
+int main(){
+    insert_team("Gujarat Titans", "Ashish Nehra", 10, 1, "Hardik Pandya", 1000000);
+    insert_team("Mumbai Indians", "Sachin Tendulkar", 20, 3, "Kevin Pollard", 2000000);
+    insert_plyr("Gujarat Titans", "Shubhman Gill", 2000000);
+    insert_plyr("Gujarat Titans", "Abhinav Malohar", 2000000);
+    insert_plyr("Gujarat Titans", "Sai Sudarshan", 2000000);
+    insert_plyr("Gujarat Titans", "David Miller", 2000000);
+    insert_plyr("Gujarat Titans", "Dasun Shanaka", 2000000);
+    traverse_team(head);
+    traverse_player(head, "Gujarat Titans");
     return 0;
 }
