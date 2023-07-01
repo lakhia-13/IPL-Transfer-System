@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #define str_len 30
 
 typedef struct player {
@@ -20,65 +21,65 @@ typedef struct team {
 
 struct team *head;
 
-void insert_team(char *t, char *men, int gw, int gl, char *cname, float sal){
-    tm* newTeam = malloc(sizeof(tm));
+void insert_team(char *t, char *men, int gw, int gl, char *cname, float sal) {
+    tm *newTeam = malloc(sizeof(tm));
     newTeam->node_p = malloc(sizeof(plyr));
-    strcpy(newTeam->tname,t);
-    strcpy(newTeam->mentor,men);
+    strcpy(newTeam->tname, t);
+    strcpy(newTeam->mentor, men);
     newTeam->games_won = gw;
     newTeam->games_lost = gl;
-    strcpy(newTeam->node_p->pname,cname);
+    strcpy(newTeam->node_p->pname, cname);
     newTeam->node_p->next_player = NULL;
     newTeam->node_p->salary = sal;
     newTeam->next_team = NULL;
-    tm* current = head;
+    tm *current = head;
 
-    if (!current){
+    if (!current) {
         head = newTeam;
-    }else {
-        while (current->next_team){
+    } else {
+        while (current->next_team) {
             current = current->next_team;
         }
         current->next_team = newTeam;
     }
 }
 
-void insert_plyr(char* team, char* playr, float sal){
-    tm* temp = head;
-    plyr* currentp = malloc(sizeof(plyr));
-    while (temp->next_team){
-        if (!strcmp(team, temp->tname)){
+void insert_plyr(char *team, char *playr, float sal) {
+    tm *temp = head;
+    plyr *currentp = malloc(sizeof(plyr));
+    while (temp->next_team) {
+        if (!strcmp(team, temp->tname)) {
             break;
         }
         temp = temp->next_team;
     }
-    plyr* curp = temp->node_p;
-    while(curp->next_player){
+    plyr *curp = temp->node_p;
+    while (curp->next_player) {
         curp = curp->next_player;
     }
-    strcpy(currentp->pname,playr);
+    strcpy(currentp->pname, playr);
     currentp->salary = sal;
     currentp->next_player = NULL;
     curp->next_player = currentp;
 }
 
-void traverse_player(char* team){
-    tm* temp = head;
-    while(temp){
+void traverse_player(char *team) {
+    tm *temp = head;
+    while (temp) {
         if (!strcmp(team, temp->tname)) break;
         temp = temp->next_team;
     }
-    plyr* cup = temp->node_p->next_player;
-    while(cup){
+    plyr *cup = temp->node_p->next_player;
+    while (cup) {
         printf("Player : %s\n", cup->pname);
         printf("Salary : %f\n\n", cup->salary);
         cup = cup->next_player;
     }
 }
 
-void traverse_team(){
+void traverse_team() {
     tm *temp = head;
-    while(temp != NULL){
+    while (temp->next_team) {
         printf("Team : %s\n", temp->tname);
         printf("Mentor : %s\n", temp->mentor);
         printf("Captain : %s\n", temp->node_p->pname);
@@ -89,52 +90,58 @@ void traverse_team(){
     }
 }
 
-void del_team(char* x){
-    tm* temp = head;
-    while(temp->next_team!=NULL){
-        if(strcmp(temp->next_team->tname,x)==0){
+void del_team(char *x) {
+    tm *temp = head;
+    while (temp->next_team) {
+        if (!strcmp(temp->next_team->tname, x)) {
             temp->next_team = temp->next_team->next_team;
-            free(temp->next_team);
         }
         temp = temp->next_team;
     }
-};
+}
 
-void del_player(char* t, char* p){
- tm* temp = head;
-    while(temp->next_team!=NULL){
-        if(strcmp(temp->next_team->tname,t)==0){break;}
-        }
-    plyr* cpr = temp->node_p->next_player;
-    while(cpr!=NULL){
-        if(strcmp(cpr->pname,p)==0){
-            cpr = cpr->next_player;
-            free(cpr);
+
+void del_player(char *t, char *p) {
+    tm *temp = head;
+    while (temp->next_team) {
+        if (!strcmp(temp->tname, t)) break;
+        temp = temp->next_team;
+    }
+    plyr* cpr = temp->node_p;
+    while (cpr->next_player) {
+        if (!strcmp(cpr->next_player->pname, p)) {
+            cpr->next_player = cpr->next_player->next_player;
+            return;
         }
         cpr = cpr->next_player;
     }
-};
+}
 
-void get_player(char* p){
-  tm* temp = head;
-  while(temp!=NULL){
-    plyr* pl = temp->node_p->next_player;
-    while(pl->next_player!= NULL){
-      if(strcmp(pl->pname, p)==0){
-        printf("Player : %s\n", pl->pname);
-        printf("Salary : %f\n\n", pl->salary);
-        break;
-        goto here;
-      }
+int checkPlayer(plyr* pl, char* p) {
+    while(pl->next_player){
+        if(!strcmp(pl->pname, p)){
+            printf("Player : %s\n", pl->pname);
+            printf("Salary : %f\n\n", pl->salary);
+            return 1;
+        }
+        pl = pl->next_player;
     }
-    here:
-      break;
-      head = NULL;
-    temp = temp->next_team;
-  }
-};
+    return 0;
+}
 
-int main(){
+int get_player(char *p) {
+    tm *temp = head;
+    while (temp) {
+        plyr *pl = temp->node_p->next_player;
+        if (checkPlayer(pl, p)) {
+            return 1;
+        }
+        temp = temp->next_team;
+    }
+    return 0;
+}
+
+int main() {
     insert_team("Gujarat Titans", "Ashish Nehra", 10, 1, "Hardik Pandya", 1000000);
     insert_team("Mumbai Indians", "Sachin Tendulkar", 20, 3, "Kevin Pollard", 2000000);
     insert_team("Chennai Super Kings", "MSD", 40, 5, "Ashwin", 8000000);
@@ -146,12 +153,13 @@ int main(){
     insert_plyr("Gujarat Titans", "Dasun Shanaka", 2000000);
     insert_plyr("Mumbai Indians", "Foo Bar", 2000000);
     insert_plyr("Mumbai Indians", "Foo1 Bar1", 2000000);
-    //del_team("Chennai Super Kings");  
-    //del_player("Gujarat Titans", "Shubhman Gill"); 
+    del_team("Mumbai Indians");
     traverse_team();
-    //traverse_player("Gujarat Titans");
+    del_player("Gujarat Titans", "Shubhman Gill");
+//    traverse_team();
+//    traverse_player("Gujarat Titans");
     //traverse_player("Mumbai Indians");
-    get_player("Shubhman Gill");
-    get_player("Foo Bar");
+//    printf("%d", get_player("Shubhman Gill"));
+//    get_player("Foo Bar");
     return 0;
 }
