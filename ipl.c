@@ -152,11 +152,11 @@ int main() {
     insert_plyr("Gujarat Titans", "Dasun Shanaka", 2000000);
     insert_plyr("Mumbai Indians", "Foo Bar", 2000000);
     insert_plyr("Mumbai Indians", "Foo1 Bar1", 2000000);
-//    del_team("Mumbai Indians");
+    del_team("Mumbai Indians");
 //    traverse_team();
-    del_player("Gujarat Titans", "Shubhman Gill");
-//    traverse_team();
-    traverse_player("Gujarat Titans");
+    del_player("Mumbai Indians", "Foo Bar");
+    traverse_team();
+    traverse_player("Foo Bar");
     //traverse_player("Mumbai Indians");
 //    printf("%d", get_player("Shubhman Gill"));
 //    get_player("Foo Bar");
