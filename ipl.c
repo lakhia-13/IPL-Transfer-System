@@ -89,24 +89,56 @@ void traverse_team(){
     }
 }
 
-void del_middle_team(tm* head, char* x){
+void del_team(char* x){
     tm* temp = head;
     while(temp->next_team!=NULL){
-        if(temp->next_team->tname==x){
+        if(strcmp(temp->next_team->tname,x)==0){
             temp->next_team = temp->next_team->next_team;
+            free(temp->next_team);
         }
         temp = temp->next_team;
     }
 };
 
-void delete_player();
-void get_team();
-void get_player();
+void del_player(char* t, char* p){
+ tm* temp = head;
+    while(temp->next_team!=NULL){
+        if(strcmp(temp->next_team->tname,t)==0){break;}
+        }
+    plyr* cpr = temp->node_p->next_player;
+    while(cpr!=NULL){
+        if(strcmp(cpr->pname,p)==0){
+            cpr = cpr->next_player;
+            free(cpr);
+        }
+        cpr = cpr->next_player;
+    }
+};
+
+void get_player(char* p){
+  tm* temp = head;
+  while(temp!=NULL){
+    plyr* pl = temp->node_p->next_player;
+    while(pl->next_player!= NULL){
+      if(strcmp(pl->pname, p)==0){
+        printf("Player : %s\n", pl->pname);
+        printf("Salary : %f\n\n", pl->salary);
+        break;
+        goto here;
+      }
+    }
+    here:
+      break;
+      head = NULL;
+    temp = temp->next_team;
+  }
+};
 
 int main(){
     insert_team("Gujarat Titans", "Ashish Nehra", 10, 1, "Hardik Pandya", 1000000);
     insert_team("Mumbai Indians", "Sachin Tendulkar", 20, 3, "Kevin Pollard", 2000000);
-
+    insert_team("Chennai Super Kings", "MSD", 40, 5, "Ashwin", 8000000);
+    insert_team("Rajasthan Royals", "David Warner", 30, 1, "John Smith", 3000000);
     insert_plyr("Gujarat Titans", "Shubhman Gill", 2000000);
     insert_plyr("Gujarat Titans", "Abhinav Malohar", 2000000);
     insert_plyr("Gujarat Titans", "Sai Sudarshan", 2000000);
@@ -114,8 +146,12 @@ int main(){
     insert_plyr("Gujarat Titans", "Dasun Shanaka", 2000000);
     insert_plyr("Mumbai Indians", "Foo Bar", 2000000);
     insert_plyr("Mumbai Indians", "Foo1 Bar1", 2000000);
+    //del_team("Chennai Super Kings");  
+    //del_player("Gujarat Titans", "Shubhman Gill"); 
     traverse_team();
-//    traverse_player("Gujarat Titans");
-    traverse_player("Mumbai Indians");
+    //traverse_player("Gujarat Titans");
+    //traverse_player("Mumbai Indians");
+    get_player("Shubhman Gill");
+    get_player("Foo Bar");
     return 0;
 }
