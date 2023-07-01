@@ -79,7 +79,7 @@ void traverse_player(char *team) {
 
 void traverse_team() {
     tm *temp = head;
-    while (temp->next_team) {
+    while (temp) {
         printf("Team : %s\n", temp->tname);
         printf("Mentor : %s\n", temp->mentor);
         printf("Captain : %s\n", temp->node_p->pname);
@@ -92,6 +92,10 @@ void traverse_team() {
 
 void del_team(char *x) {
     tm *temp = head;
+    if (!strcmp(temp->tname, x)){
+        head = head->next_team;
+        return;
+    }
     while (temp->next_team) {
         if (!strcmp(temp->next_team->tname, x)) {
             temp->next_team = temp->next_team->next_team;
@@ -107,13 +111,12 @@ void del_player(char *t, char *p) {
         if (!strcmp(temp->tname, t)) break;
         temp = temp->next_team;
     }
-    plyr* cpr = temp->node_p;
-    while (cpr->next_player) {
-        if (!strcmp(cpr->next_player->pname, p)) {
-            cpr->next_player = cpr->next_player->next_player;
+    while (temp->node_p->next_player) {
+        if (!strcmp(temp->node_p->next_player->pname, p)) {
+            temp->node_p->next_player = temp->node_p->next_player->next_player;
             return;
         }
-        cpr = cpr->next_player;
+        temp->node_p = temp->node_p->next_player;
     }
 }
 
@@ -153,12 +156,12 @@ int main() {
     insert_plyr("Gujarat Titans", "Dasun Shanaka", 2000000);
     insert_plyr("Mumbai Indians", "Foo Bar", 2000000);
     insert_plyr("Mumbai Indians", "Foo1 Bar1", 2000000);
-    del_team("Mumbai Indians");
-    traverse_team();
-    del_player("Gujarat Titans", "Shubhman Gill");
+//    del_team("Gujarat Titans");
 //    traverse_team();
+//    del_player("Mumbai Indians", "Foo Bar");
+    traverse_team();
+    traverse_player("Gujarat Titans");
 //    traverse_player("Gujarat Titans");
-    //traverse_player("Mumbai Indians");
 //    printf("%d", get_player("Shubhman Gill"));
 //    get_player("Foo Bar");
     return 0;
